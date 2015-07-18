@@ -4,7 +4,8 @@ output:
   html_document:
     keep_md: true
 ---
-```{r}
+
+```r
 # load the lattice library
 library(lattice)
 ```
@@ -14,7 +15,8 @@ library(lattice)
 
 2. Process/transform the data (if necessary) into a format suitable for your analysis
 
-```{r}
+
+```r
 # 1. Load the data
 dataset <- read.csv("activity.csv")
 
@@ -32,17 +34,32 @@ For this part of the assignment, you can ignore the missing values in the datase
 
 3. Calculate and report the mean and median of the total number of steps taken per day
 
-```{r}
+
+```r
 # 1. Total steps
 totalStepsPerDay <- aggregate(steps ~ date, dataset, FUN = sum, na.rm = TRUE)
 
 # 2. Plot the histogram
 hist(totalStepsPerDay$steps, col = "blue", main = "Histogram", xlab = "Total steps per day")
+```
 
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png) 
+
+```r
 # 3. Calculate and report mean/median
 mean(totalStepsPerDay$steps)
-median(totalStepsPerDay$steps)
+```
 
+```
+## [1] 10766.19
+```
+
+```r
+median(totalStepsPerDay$steps)
+```
+
+```
+## [1] 10765
 ```
 
 
@@ -51,16 +68,24 @@ median(totalStepsPerDay$steps)
 
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r}
+
+```r
 # 1. Time series plot
 meanStepsPerInterval <- aggregate(steps ~ interval, dataset, FUN = mean, na.rm = TRUE)
 
 #with(meanStepsPerInterval, plot(interval, steps, type = "l", main = "Time Series Plot"))
 xyplot(steps ~ interval, meanStepsPerInterval, type = "l", main="Time Series Plot", xlab = "Interval", ylab = "Steps")
+```
 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
+
+```r
 # 2. Find interval containing max number of steps
 meanStepsPerInterval[which.max(meanStepsPerInterval$steps),1]
+```
 
+```
+## [1] 835
 ```
 
 
@@ -75,10 +100,17 @@ Note that there are a number of days/intervals where there are missing values (c
 
 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-```{r}
+
+```r
 # 1. Calculate and report number of missing values
 sum(is.na(dataset))
+```
 
+```
+## [1] 2304
+```
+
+```r
 # 2. going to use the mean for the interval to fill in missing values
 
 # 3. Creating new data set
@@ -93,11 +125,24 @@ for (i in 1:nrow(imputedDataset)) {
 totalStepsPerDayImputed <- aggregate(steps ~ date, imputedDataset, FUN = sum, na.rm = TRUE)
 
 hist(totalStepsPerDayImputed$steps, col = "blue", main = "Histogram with Imputed Data", xlab = "Total steps per day")
+```
 
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
 
+```r
 mean(totalStepsPerDayImputed$steps)
-median(totalStepsPerDayImputed$steps)
+```
 
+```
+## [1] 10766.19
+```
+
+```r
+median(totalStepsPerDayImputed$steps)
+```
+
+```
+## [1] 10766.19
 ```
 The overall affect the imputed values have on the original data is pretty small. The mean is the same while the median is now the same as the mean. The histogram shows a slight increase in the number of days that now fall into the 10,000 - 15,000 range.
 
@@ -109,7 +154,8 @@ For this part the weekdays() function may be of some help here. Use the dataset 
 
 2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
 
-```{r}
+
+```r
 imputedDataset$day <- weekdays(imputedDataset$date)
 imputedDataset$dayfactor <- c("weekday")
 
@@ -127,3 +173,5 @@ imputedDataset$dayfactor <- as.factor(imputedDataset$dayfactor)
 meanStepsPerIntervalByDay <- aggregate(steps ~ interval + dayfactor, imputedDataset, mean)
 xyplot(steps ~ interval | dayfactor, meanStepsPerIntervalByDay, type = "l", layout = c(1,2), xlab = "Interval", ylab = "Steps")
 ```
+
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
